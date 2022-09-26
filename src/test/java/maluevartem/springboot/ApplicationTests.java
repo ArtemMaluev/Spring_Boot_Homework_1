@@ -19,10 +19,11 @@ class ApplicationTests {
 
     @Container
     private final static GenericContainer<?> devApp = new GenericContainer<>("devapp:latest")
-            .withExposedPorts(8888);
+            .withExposedPorts(8080);
+
     @Container
     private final static GenericContainer<?> prodApp = new GenericContainer<>("prodapp:latest")
-            .withExposedPorts(8889);
+            .withExposedPorts(8081);
 
     @Test
     void containerInfo() {
@@ -32,7 +33,7 @@ class ApplicationTests {
                 "\n" + devApp.getContainerId() +
                 "\n" + devApp.getHost() +
                 "\n" + devApp.getExposedPorts() +
-                "\n" + devApp.getMappedPort(8888));
+                "\n" + devApp.getMappedPort(8080));
 
         System.out.println();
         System.out.println("prodApp: " +
@@ -41,19 +42,19 @@ class ApplicationTests {
                 "\n" + prodApp.getContainerId() +
                 "\n" + prodApp.getHost() +
                 "\n" + prodApp.getExposedPorts() +
-                "\n" + prodApp.getMappedPort(8889));
+                "\n" + prodApp.getMappedPort(8081));
     }
 
     @Test
     void devAppTest() {
-        ResponseEntity<String> forEntityFirst = restTemplate.getForEntity("http://localhost:" + devApp.getMappedPort(8888) + "/profile", String.class);
+        ResponseEntity<String> forEntityFirst = restTemplate.getForEntity("http://localhost:" + devApp.getMappedPort(8080) + "/profile", String.class);
         System.out.println(forEntityFirst.getBody());
         Assertions.assertEquals("Current profile is dev", forEntityFirst.getBody());
     }
 
     @Test
     void prodAppTest() {
-        ResponseEntity<String> forEntitySecond = restTemplate.getForEntity("http://localhost:" + prodApp.getMappedPort(8889) + "/profile", String.class);
+        ResponseEntity<String> forEntitySecond = restTemplate.getForEntity("http://localhost:" + prodApp.getMappedPort(8081) + "/profile", String.class);
         System.out.println(forEntitySecond.getBody());
         Assertions.assertEquals("Current profile is production", forEntitySecond.getBody());
     }
